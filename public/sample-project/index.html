@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Vault Protocol — Decentralized Yield & Liquidity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="custom-styles.css">
+</head>
+<body>
+  <div class="site-wrapper">
+    <!-- Top Navigation Header -->
+    <header class="top-nav">
+      <div class="nav-brand">
+        <div class="brand-symbol">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-details">
+          <span class="brand-text">Apex Vault</span>
+          <span class="brand-subtag">v3.4 Liquid Core</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#products" class="nav-link active">Products</a>
+        <a href="#matrix" class="nav-link">Yield Matrix</a>
+        <a href="#security" class="nav-link">Security Audits</a>
+        <a href="#docs" class="nav-link">Documentation</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="network-badge">
+          <span class="status-pulse-dot"></span>
+          <span>Mainnet Live</span>
+        </div>
+        <a href="#signin" class="nav-ghost-btn">Sign In</a>
+        <button id="nav-launch-btn" class="nav-cta-btn">Launch App</button>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <!-- Eyebrow Badge -->
+        <div class="status-badge">
+          <span class="pulse-dot"></span>
+          <span class="badge-text">v3.4 Liquid Core Active &bull; Zero-Knowledge Validated</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-title">
+          Programmable Yield &amp; <br>
+          <span class="gradient-text">Autonomous Liquidity</span> Routing
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="hero-desc">
+          Next-generation institutional vaults engineered with mathematical zero-slippage protocols and self-balancing staking pools for multi-chain developers.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="hero-cta-group">
+          <button id="main-cta-button" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
+            </svg>
+            <span>Start Vaulting</span>
+          </button>
+
+          <button id="secondary-cta-button" class="btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            <span>Read Protocol Docs</span>
+          </button>
+        </div>
+
+        <!-- Telemetry Stats Strip -->
+        <div class="telemetry-strip">
+          <div class="stat-card">
+            <div class="stat-value">$1.42B+</div>
+            <div class="stat-label">Total Value Locked</div>
+            <span class="stat-delta">&uarr; +12.4% week</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value highlight-green">18.4%</div>
+            <div class="stat-label">Base Dynamic APY</div>
+            <span class="stat-delta">Compounded daily</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">48 Nodes</div>
+            <div class="stat-label">Active Clusters</div>
+            <span class="stat-delta">100% Consensus</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual Card (Interactive Telemetry Stage) -->
+      <div class="hero-visual">
+        <div class="telemetry-box">
+          <div class="box-header">
+            <div class="box-title-group">
+              <span class="box-tag">Vault Alpha Telemetry</span>
+              <span class="box-sub">ETH-USDC Main Pool</span>
+            </div>
+            <span class="live-pill">
+              <span class="live-dot"></span>
+              LIVE SYNC
+            </span>
+          </div>
+
+          <div class="pool-row">
+            <div>
+              <span class="pool-name">ETH / USDC Multi-Pool</span>
+              <div class="pool-volume">24h Vol: $48.2M</div>
+            </div>
+            <div class="pool-growth-badge">
+              <span class="pool-growth">+14.2%</span>
+              <span class="pool-growth-lbl">Dynamic APY</span>
+            </div>
+          </div>
+
+          <!-- Interactive Chart -->
+          <div class="mini-chart">
+            <svg width="100%" height="90" viewBox="0 0 340 90" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2563EB" stop-opacity="0.28"/>
+                  <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+              <path d="M 0,70 Q 50,75 100,50 T 200,35 T 280,20 T 340,12 L 340,90 L 0,90 Z" fill="url(#chartGradient)"/>
+              <path d="M 0,70 Q 50,75 100,50 T 200,35 T 280,20 T 340,12" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="340" cy="12" r="5" fill="#2563EB" stroke="#ffffff" stroke-width="2"/>
+            </svg>
+          </div>
+
+          <div class="box-footer">
+            <span class="block-hash">Block #19823432</span>
+            <span class="consensus-ok">&check; Consensus 100% Audited</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Curated Vault Matrix Grid -->
+    <section class="vaults-section">
+      <div class="section-heading">
+        <div>
+          <h2 class="section-title">Institutional Staking Matrices</h2>
+          <p class="section-subtitle">Zero-counterparty execution on battle-tested EVM Layer-2 rollups.</p>
+        </div>
+        <div class="section-tag">3 Live Pools</div>
+      </div>
+
+      <div class="vaults-grid">
+        <!-- Vault Card 1 -->
+        <div class="vault-card">
+          <div class="vault-card-header">
+            <div class="vault-chain-badge chain-arb">
+              <span class="chain-dot"></span>
+              <span>Arbitrum One</span>
+            </div>
+            <span class="vault-risk risk-low">Audited A+</span>
+          </div>
+          <h3 class="vault-name">Arbitrum Dynamic Yield Matrix</h3>
+          <p class="vault-assets">Assets: <strong>WETH &bull; USDC &bull; ARB</strong></p>
+          <div class="vault-metrics">
+            <div>
+              <div class="metric-val highlight-green">21.8%</div>
+              <div class="metric-lbl">Current APY</div>
+            </div>
+            <div>
+              <div class="metric-val">$412.5M</div>
+              <div class="metric-lbl">Total Value</div>
+            </div>
+          </div>
+          <button class="vault-action-btn">Quick Vault &rarr;</button>
+        </div>
+
+        <!-- Vault Card 2 -->
+        <div class="vault-card featured-vault">
+          <div class="vault-card-header">
+            <div class="vault-chain-badge chain-base">
+              <span class="chain-dot"></span>
+              <span>Base Mainnet</span>
+            </div>
+            <span class="vault-risk risk-prime">Institutional</span>
+          </div>
+          <h3 class="vault-name">Base Autonomous Staking Protocol</h3>
+          <p class="vault-assets">Assets: <strong>cbETH &bull; USDC</strong></p>
+          <div class="vault-metrics">
+            <div>
+              <div class="metric-val highlight-green">16.4%</div>
+              <div class="metric-lbl">Current APY</div>
+            </div>
+            <div>
+              <div class="metric-val">$289.1M</div>
+              <div class="metric-lbl">Total Value</div>
+            </div>
+          </div>
+          <button class="vault-action-btn btn-highlight">Quick Vault &rarr;</button>
+        </div>
+
+        <!-- Vault Card 3 -->
+        <div class="vault-card">
+          <div class="vault-card-header">
+            <div class="vault-chain-badge chain-op">
+              <span class="chain-dot"></span>
+              <span>Optimism OP</span>
+            </div>
+            <span class="vault-risk risk-low">Audited AA</span>
+          </div>
+          <h3 class="vault-name">Flash Zero-Slippage Pool</h3>
+          <p class="vault-assets">Assets: <strong>stETH &bull; USDT</strong></p>
+          <div class="vault-metrics">
+            <div>
+              <div class="metric-val highlight-green">19.2%</div>
+              <div class="metric-lbl">Current APY</div>
+            </div>
+            <div>
+              <div class="metric-val">$184.6M</div>
+              <div class="metric-lbl">Total Value</div>
+            </div>
+          </div>
+          <button class="vault-action-btn">Quick Vault &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-time Activity Ticker -->
+    <div class="activity-ticker">
+      <div class="ticker-label">
+        <span class="ticker-pulse"></span>
+        <span>LIVE ACTIVITY</span>
+      </div>
+      <div class="ticker-track">
+        <div class="ticker-item">&bull; 0x7a2...f8d vaulted 42.5 ETH into Multi-Pool (+18.4% APY)</div>
+        <div class="ticker-item">&bull; Vault Matrix #02 auto-compounded $120K USDC</div>
+        <div class="ticker-item">&bull; Zero-slippage rebalance executed across 48 validator clusters</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

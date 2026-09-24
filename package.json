@@ -1,0 +1,49 @@
+{
+  "name": "visualstyle-studio",
+  "version": "1.0.0",
+  "description": "Offline-first native desktop utility for visual web styling, live color tuning, and CSS animation injection",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "desktop": "bash -c \"$HOME/.local/share/electron-bin/electron .\"",
+    "start": "bash -c \"$HOME/.local/share/electron-bin/electron .\"",
+    "server": "node server.js",
+    "dist:linux": "electron-builder --linux",
+    "dist:win": "electron-builder --windows"
+  },
+  "build": {
+    "appId": "dev.visualstyle.studio",
+    "productName": "VisualStyle Studio",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    }
+  },
+  "keywords": [
+    "css",
+    "styler",
+    "inspector",
+    "animation",
+    "desktop-app",
+    "offline-first",
+    "developer-tools"
+  ],
+  "author": "VisualStyle Studio Team",
+  "license": "MIT"
+}

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VisualStyle Studio — Offline-First Visual CSS & Animation Workbench</title>
+  <link rel="stylesheet" href="css/studio.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Window Header & Navigation -->
+  <header class="studio-header">
+    <div class="header-left">
+      <div class="window-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <div class="app-brand">
+        <div class="brand-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <span>VisualStyle Studio</span>
+        <span class="badge-offline">v1.0 Offline</span>
+      </div>
+    </div>
+
+    <!-- Mode Switcher: Inspector & Tuner vs Sandbox Visual Builder -->
+    <div class="mode-segmented-control">
+      <button id="btn-mode-inspector" class="mode-btn active" title="Mode Inspeksi & Penyetel Gaya CSS">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/>
+        </svg>
+        <span>Inspector & Tuner</span>
+      </button>
+      <button id="btn-mode-sandbox" class="mode-btn" title="Mode Visual Canvas & Drag-and-Drop Builder">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        <span>✨ Sandbox Visual Builder</span>
+      </button>
+    </div>
+
+    <div class="header-center">
+      <div class="project-indicator">
+        <span class="status-dot"></span>
+        <span id="project-path-display" class="project-path">Apex Vault Protocol (Sample)</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="btn-open-folder" class="btn-ui" title="Buka Folder Proyek Lokal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>
+        </svg>
+        <span>Open Folder</span>
+      </button>
+
+      <button id="btn-export-css" class="btn-ui" title="Unduh custom-styles.css">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+        <span>Export CSS</span>
+      </button>
+
+      <button id="btn-save-changes" class="btn-ui btn-ui-primary" title="Simpan ke Berkas Lokal (Ctrl+S)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+        </svg>
+        <span>Save Changes</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Three-Pane Workbench -->
+  <div class="workbench-container">
+
+    <!-- LEFT PANE: Explorer & Component Palette / DOM Tree -->
+    <aside class="left-pane">
+      <!-- Project Files (Visible in Inspector Mode) -->
+      <div id="section-project-files" class="pane-section">
+        <div class="pane-header">
+          <span>Workspace Files</span>
+          <span class="pane-badge">Local</span>
+        </div>
+        <div id="project-files-tree" class="file-tree-container">
+          <!-- Populated by FileManager -->
+        </div>
+      </div>
+
+      <!-- Component Palette (Visible in Sandbox Mode) -->
+      <div id="section-component-palette" class="pane-section" style="display: none; flex: 1; overflow: hidden; flex-direction: column;">
+        <div class="pane-header">
+          <span>Component Palette</span>
+          <span class="pane-badge">Drag &amp; Drop</span>
+        </div>
+        <div id="sandbox-component-palette" class="palette-container">
+          <!-- Populated by SandboxBuilder -->
+        </div>
+      </div>
+
+      <!-- DOM Element Tree -->
+      <div id="section-dom-tree" class="pane-section" style="flex: 1; border-bottom: none;">
+        <div class="pane-header">
+          <span>DOM Element Tree</span>
+          <span class="pane-badge">Live</span>
+        </div>
+        <div id="dom-tree-container" class="dom-tree-container">
+          <!-- Populated by DomTreeManager -->
+        </div>
+      </div>
+
+      <!-- Active Element Diagnostics Card -->
+      <div id="section-diagnostics" class="active-element-card">
+        <div class="metric-row">
+          <span class="metric-label">Specificity:</span>
+          <span id="metric-specificity" class="metric-value">(0, 1, 1)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Computed Box:</span>
+          <span id="metric-computed-box" class="metric-value">160 × 44 px</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Display Mode:</span>
+          <span id="metric-display-flow" class="metric-value">inline-flex</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER PANE: Artboard & Sandboxed Live Preview -->
+    <main class="center-pane">
+      <!-- Artboard Toolbar -->
+      <div class="artboard-toolbar">
+        <div class="device-segmented-control">
+          <button id="btn-preset-desktop" class="device-btn active" title="Desktop Viewport (1200px)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
+            </svg>
+            <span>Desktop</span>
+          </button>
+          <button id="btn-preset-tablet" class="device-btn" title="Tablet Viewport (768px)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="16" height="20" x="4" y="2" rx="2"/><line x1="12" x2="12.01" y1="18" y2="18"/>
+            </svg>
+            <span>Tablet (768px)</span>
+          </button>
+          <button id="btn-preset-mobile" class="device-btn" title="Mobile HP Viewport (375px)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>
+            </svg>
+            <span>Mobile (375px)</span>
+          </button>
+          <button id="btn-preset-fluid" class="device-btn" title="Fluid Responsive (100% Kanvas)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+            </svg>
+            <span>Fluid Auto</span>
+          </button>
+        </div>
+
+        <!-- Custom Viewport Dimension & Zoom Controls -->
+        <div class="viewport-dimension-controls">
+          <div class="dimension-input-group">
+            <span class="dim-label">W:</span>
+            <input id="viewport-input-w" type="number" class="dim-input" value="1200" min="280" max="2560" title="Lebar Viewport (px)">
+            <span class="dim-separator">&times;</span>
+            <span class="dim-label">H:</span>
+            <input id="viewport-input-h" type="number" class="dim-input" value="780" min="200" max="2160" title="Tinggi Viewport (px)">
+          </div>
+
+          <button id="btn-orientation-flip" class="btn-icon-square" title="Putar Orientasi (Portrait ⇄ Landscape)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+            </svg>
+          </button>
+
+          <select id="select-canvas-zoom" class="zoom-select" title="Skala Kanvas">
+            <option value="1">100%</option>
+            <option value="0.75">75%</option>
+            <option value="0.5">50%</option>
+            <option value="fit">Fit Screen</option>
+          </select>
+        </div>
+
+        <div class="toolbar-actions-right">
+          <!-- Dynamic Selector Color Theme Button -->
+          <div class="selector-theme-wrapper">
+            <span class="toolbar-hint">Selector:</span>
+            <button id="btn-selector-theme-cycle" class="selector-theme-btn" title="Klik untuk mengganti tema warna selector (Pelangi Mengalir, Neon Cyan, Neon Pink, Emerald, Amber)">
+              <span id="selector-theme-dot" class="theme-dot rainbow-dot"></span>
+              <span id="selector-theme-text">🌈 Rainbow Flow</span>
+            </button>
+          </div>
+
+          <button id="btn-toggle-inspect" class="inspect-toggle-btn active" title="Aktifkan Point-and-Click Inspector">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/>
+            </svg>
+            <span>Inspect Mode: ON</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Breadcrumbs Bar -->
+      <div id="breadcrumbs-bar" class="breadcrumbs-bar">
+        <span class="crumb-item">body</span>
+        <span>&gt;</span>
+        <span class="crumb-item active">button.btn-primary</span>
+      </div>
+
+      <!-- Canvas Artboard Stage -->
+      <div class="artboard-stage">
+        <div id="viewport-frame" class="viewport-frame preset-desktop">
+          <div class="viewport-header">
+            <div class="window-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="viewport-url-bar">
+              <span id="viewport-url-text">local://index.html</span>
+              <span style="color: #10b981; font-weight: 600;">Sandbox Isolation</span>
+            </div>
+          </div>
+
+          <!-- Preview Frame & Injected Bridge -->
+          <iframe id="preview-iframe" class="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+
+          <!-- Hover & Selection Bounding Box Overlay -->
+          <div class="inspector-overlay-root">
+            <div id="bounding-highlight" class="bounding-box-highlight">
+              <div id="bounding-tooltip" class="bounding-box-tooltip">button.btn-primary | 160×44px</div>
+            </div>
+          </div>
+
+          <!-- Floating Dimension Badge -->
+          <div id="viewport-dim-badge" class="viewport-dim-badge">1200 &times; 780 px</div>
+
+          <!-- Interactive Resizer Drag Handles (Right, Bottom, Corner) -->
+          <div id="resizer-handle-e" class="resizer-handle resizer-handle-e" title="Drag tepi kanan untuk ubah lebar"></div>
+          <div id="resizer-handle-s" class="resizer-handle resizer-handle-s" title="Drag tepi bawah untuk ubah tinggi"></div>
+          <div id="resizer-handle-se" class="resizer-handle resizer-handle-se" title="Drag sudut untuk ubah ukuran bebas"></div>
+        </div>
+
+        <!-- 2. Empty State View -->
+        <div id="empty-state-view" class="empty-state-view">
+          <div class="empty-state-card">
+            <div class="empty-state-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" x2="12" y1="18" y2="12"/><line x1="9" x2="15" y1="15" y2="15"/>
+              </svg>
+            </div>
+            <h2 class="empty-title">Belum Ada Proyek Dibuka</h2>
+            <p class="empty-desc">
+              Pilih direktori website lokal Anda yang memuat file <code>.html</code> dan <code>.css</code> untuk mulai styling visual.
+            </p>
+            <div style="display: flex; gap: 0.75rem;">
+              <button id="btn-empty-load-sample" class="btn-ui btn-ui-primary">
+                <span>Muat Proyek Contoh (Apex Vault)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Loading Skeleton Overlay -->
+        <div id="skeleton-overlay" class="skeleton-overlay">
+          <div class="skeleton-shimmer" style="height: 36px; width: 40%;"></div>
+          <div class="skeleton-shimmer" style="height: 200px; width: 100%;"></div>
+          <div style="display: flex; gap: 1rem;">
+            <div class="skeleton-shimmer" style="height: 100px; flex: 1;"></div>
+            <div class="skeleton-shimmer" style="height: 100px; flex: 1;"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT PANE: Color Tuner & Animation Injector -->
+    <aside class="right-pane">
+      <!-- Tabs -->
+      <div class="inspector-tabs">
+        <button id="tab-btn-color" class="tab-btn active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2z"/>
+          </svg>
+          <span>Color Tuner</span>
+        </button>
+        <button id="tab-btn-anim" class="tab-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <span>Animation Injector</span>
+        </button>
+      </div>
+
+      <!-- Target Element Banner -->
+      <div class="target-banner">
+        <span id="target-selector-text" class="target-selector">button.btn-primary</span>
+        <span class="modified-badge">LIVE ACTIVE</span>
+      </div>
+
+      <!-- TAB 1 CONTENT: Color Tuner -->
+      <div id="tab-content-color" class="tab-content active">
+        <!-- Palette Swatches -->
+        <div>
+          <div class="section-title">
+            <span>Project Palette</span>
+            <span style="font-size: 10px; color: var(--accent-blue);">Quick Swatches</span>
+          </div>
+          <div id="palette-swatches" class="swatches-grid">
+            <!-- Populated by ColorTuner -->
+          </div>
+        </div>
+
+        <!-- Color Property Rows -->
+        <div>
+          <div class="section-title">
+            <span>Color Properties</span>
+          </div>
+
+          <!-- Background Fill & Gradient Synthesis Section -->
+          <div class="fill-synthesis-section">
+            <div class="fill-header-flex">
+              <span id="fill-section-title" class="prop-label" style="font-weight: 600; color: var(--text-primary);">Fill &amp; Gradien</span>
+              <!-- Fill Type Segmented Tabs -->
+              <div class="fill-type-tabs">
+                <button id="fill-tab-solid" class="fill-type-btn active" type="button" title="Warna Solid Tunggal">Solid</button>
+                <button id="fill-tab-linear" class="fill-type-btn" type="button" title="Gradien Linier Berarah">Linear</button>
+                <button id="fill-tab-radial" class="fill-type-btn" type="button" title="Gradien Melingkar Radial">Radial</button>
+              </div>
+            </div>
+
+            <!-- Gradient & Color Target: Element Box Background vs Text / Font Fill -->
+            <div class="fill-target-selector-row">
+              <span class="target-sublabel">Terapkan Pada:</span>
+              <div class="fill-target-segmented">
+                <button id="fill-target-bg" class="fill-target-btn active" type="button" title="Terapkan warna/gradien pada latar belakang kotak elemen (Background Box)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="18" height="18" x="3" y="3" rx="2"/>
+                  </svg>
+                  <span>Latar Kotak</span>
+                </button>
+                <button id="fill-target-text" class="fill-target-btn" type="button" title="Terapkan gradien langsung ke teks/tulisan (Gradient Text Fill)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="4 7 4 4 20 4 20 7"/>
+                    <line x1="9" y1="20" x2="15" y2="20"/>
+                    <line x1="12" y1="4" x2="12" y2="20"/>
+                  </svg>
+                  <span>Teks Tulisan</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="fill-target-banner-text" class="fill-target-notice" style="display: none;">
+              <span class="notice-icon">✨</span>
+              <span><strong>Mode Gradien Teks Aktif:</strong> Gradien dipotong rapi mengikuti bentuk huruf (text clip), bukan menutup kotak.</span>
+            </div>
+
+            <!-- 1. Solid Color View -->
+            <div id="fill-view-solid" class="fill-view-pane active">
+              <div class="color-property-row" style="margin-bottom: 0;">
+                <span class="prop-label">Solid Color</span>
+                <div class="prop-control">
+                  <input type="color" id="color-picker-bg" class="color-input-preview" value="#2563eb">
+                  <input type="text" id="color-text-bg" class="color-input-text" value="#2563eb">
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Gradient Synthesis View -->
+            <div id="fill-view-gradient" class="fill-view-pane">
+              <!-- Visual Gradient Ramp Track -->
+              <div class="gradient-ramp-wrapper">
+                <div class="gradient-ramp-header">
+                  <span class="ramp-title">Gradient Ramp</span>
+                  <span id="gradient-stops-count" class="ramp-meta">2 Color Stops</span>
+                </div>
+                <div id="gradient-ramp-container" class="gradient-ramp-container">
+                  <div id="gradient-ramp-track" class="gradient-ramp-track" title="Klik pada bar untuk menambah Color Stop baru"></div>
+                  <div id="gradient-ramp-pins" class="gradient-ramp-pins"></div>
+                </div>
+                <span class="ramp-hint">Klik di sembarang bar untuk menambah stop baru</span>
+              </div>
+
+              <!-- Active Stop Configuration Card -->
+              <div id="gradient-stop-card" class="gradient-stop-card">
+                <div class="stop-card-header">
+                  <span id="gradient-stop-badge" class="stop-badge">Stop 1 of 2 (Active)</span>
+                  <div class="stop-header-actions">
+                    <button id="btn-add-gradient-stop" class="btn-micro" type="button" title="Tambah Color Stop Baru">+ Add Stop</button>
+                    <button id="btn-delete-gradient-stop" class="btn-micro-danger" type="button" title="Hapus Stop Ini (Min. 2 Stop)">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Stop Color & Hex -->
+                <div class="stop-param-row">
+                  <span class="param-label">Color (Hex)</span>
+                  <div class="prop-control">
+                    <input type="color" id="gradient-stop-color-picker" class="color-input-preview" value="#2563eb">
+                    <input type="text" id="gradient-stop-color-text" class="color-input-text" value="#2563eb">
+                  </div>
+                </div>
+
+                <!-- Stop Position (0-100%) -->
+                <div class="stop-param-row">
+                  <div class="param-header-flex">
+                    <span class="param-label">Stop Position</span>
+                    <span id="gradient-pos-val" class="param-val-badge">0%</span>
+                  </div>
+                  <div class="range-with-input">
+                    <input type="range" id="gradient-stop-pos-slider" class="styled-range" min="0" max="100" value="0">
+                    <input type="number" id="gradient-stop-pos-input" class="range-number-box" min="0" max="100" value="0">
+                    <span class="unit-tag">%</span>
+                  </div>
+                </div>
+
+                <!-- Stop Opacity (0-100%) -->
+                <div class="stop-param-row">
+                  <div class="param-header-flex">
+                    <span class="param-label">Opacity</span>
+                    <span id="gradient-opacity-val" class="param-val-badge">100%</span>
+                  </div>
+                  <div class="range-with-input">
+                    <input type="range" id="gradient-stop-opacity-slider" class="styled-range" min="0" max="100" value="100">
+                    <input type="number" id="gradient-stop-opacity-input" class="range-number-box" min="0" max="100" value="100">
+                    <span class="unit-tag">%</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Direction & Angle Controls (Linear Mode) -->
+              <div id="gradient-linear-controls" class="direction-angle-section">
+                <div class="direction-header">
+                  <span class="section-subtitle">Direction & Angle</span>
+                  <span id="gradient-angle-badge" class="angle-badge">135°</span>
+                </div>
+                <div class="angle-controller-row">
+                  <!-- Visual Rotary Compass Dial -->
+                  <div id="gradient-angle-dial" class="angle-dial" title="Drag atau klik untuk memutar sudut gradien">
+                    <div id="gradient-dial-needle" class="dial-needle"></div>
+                    <div class="dial-center-dot"></div>
+                  </div>
+                  <!-- Angle Stepper -->
+                  <div class="angle-input-box">
+                    <input type="number" id="gradient-angle-input" class="angle-number-input" min="0" max="360" value="135">
+                    <span class="unit-tag">deg</span>
+                  </div>
+                  <!-- Flip Button -->
+                  <button id="btn-gradient-flip" class="btn-flip" type="button" title="Balikkan Arah Gradien 180°">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                    <span>Flip</span>
+                  </button>
+                </div>
+
+                <!-- Quick Angle Preset Chips -->
+                <div class="angle-presets-row">
+                  <button class="angle-chip" type="button" data-angle="0">0° Top</button>
+                  <button class="angle-chip" type="button" data-angle="90">90° Right</button>
+                  <button class="angle-chip active" type="button" data-angle="135">135° Diag</button>
+                  <button class="angle-chip" type="button" data-angle="180">180° Down</button>
+                </div>
+              </div>
+
+              <!-- Radial Options (Radial Mode) -->
+              <div id="gradient-radial-controls" class="direction-angle-section" style="display: none;">
+                <div class="direction-header">
+                  <span class="section-subtitle">Radial Shape & Position</span>
+                </div>
+                <div class="radial-presets-row">
+                  <button class="radial-chip active" type="button" data-radial="circle at center">Center</button>
+                  <button class="radial-chip" type="button" data-radial="circle at top">Top</button>
+                  <button class="radial-chip" type="button" data-radial="ellipse at center">Ellipse</button>
+                  <button class="radial-chip" type="button" data-radial="circle at top left">Top-Left</button>
+                </div>
+              </div>
+
+              <!-- Studio Curated Gradient Presets -->
+              <div class="studio-presets-section">
+                <div class="presets-header">
+                  <span class="section-subtitle">Studio Presets</span>
+                  <span class="presets-count">8 Pilihan</span>
+                </div>
+                <div id="gradient-presets-grid" class="gradient-presets-grid">
+                  <!-- Populated by GradientTuner -->
+                </div>
+              </div>
+
+              <!-- Quick Action: Copy Gradient CSS -->
+              <div style="margin-top: 10px;">
+                <button id="btn-copy-gradient-rule" class="btn-ui btn-ui-secondary" type="button" style="width: 100%; justify-content: center; font-size: 11px; padding: 6px 10px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                  </svg>
+                  <span>Salin Kode CSS Gradien Saja</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="color-property-row">
+            <span class="prop-label">Text Color</span>
+            <div class="prop-control">
+              <input type="color" id="color-picker-text" class="color-input-preview" value="#ffffff">
+              <input type="text" id="color-text-text" class="color-input-text" value="#ffffff">
+            </div>
+          </div>
+
+          <div class="color-property-row">
+            <span class="prop-label">Border Color</span>
+            <div class="prop-control">
+              <input type="color" id="color-picker-border" class="color-input-preview" value="#1d4ed8">
+              <input type="text" id="color-text-border" class="color-input-text" value="#1d4ed8">
+            </div>
+          </div>
+
+          <div class="color-property-row">
+            <span class="prop-label">SVG Fill / Stroke</span>
+            <div class="prop-control">
+              <input type="color" id="color-picker-fill" class="color-input-preview" value="#ffffff">
+              <input type="text" id="color-text-fill" class="color-input-text" value="#ffffff">
+            </div>
+          </div>
+        </div>
+
+        <!-- Specificity Override Card -->
+        <div class="override-card">
+          <div class="override-info">
+            <span class="override-title">!important Override</span>
+            <span class="override-desc">Menangkan aturan terhadap CSS bawaan</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="important-override-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- TAB 2 CONTENT: Animation Injector -->
+      <div id="tab-content-anim" class="tab-content">
+        <!-- Preset Grid -->
+        <div>
+          <div class="section-title">
+            <span>Animation Presets</span>
+          </div>
+          <div id="animation-presets-grid" class="animation-presets-grid">
+            <!-- Populated by AnimationInjector -->
+          </div>
+        </div>
+
+        <!-- Sliders & Parameters -->
+        <div class="slider-control-group">
+          <div class="slider-header">
+            <span>Duration:</span>
+            <span id="anim-duration-val" class="slider-value">0.65s</span>
+          </div>
+          <input type="range" id="anim-duration-slider" class="range-slider" min="0.1" max="3.0" step="0.05" value="0.65">
+        </div>
+
+        <!-- Timing Function -->
+        <div class="slider-control-group">
+          <div class="slider-header">
+            <span>Timing Function:</span>
+          </div>
+          <select id="anim-timing-select" class="select-ui">
+            <option value="cubic-bezier(0.34, 1.56, 0.64, 1)">Spring Overshoot (cubic-bezier)</option>
+            <option value="ease">Standard Ease</option>
+            <option value="ease-out">Ease Out (Decelerate)</option>
+            <option value="ease-in-out">Ease In-Out (Smooth)</option>
+            <option value="linear">Linear</option>
+          </select>
+        </div>
+
+        <!-- Iterations -->
+        <div class="slider-control-group">
+          <div class="slider-header">
+            <span>Iteration Count:</span>
+          </div>
+          <select id="anim-iteration-select" class="select-ui">
+            <option value="1">1x (Sekali Jalan)</option>
+            <option value="2">2x</option>
+            <option value="3">3x</option>
+            <option value="infinite">Infinite (Berulang Terus)</option>
+          </select>
+        </div>
+
+        <!-- Trigger Selector -->
+        <div>
+          <div class="section-title">
+            <span>Trigger Event</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="anim-trigger-hover" class="btn-ui active" style="flex: 1; justify-content: center;">
+              <span>On Hover</span>
+            </button>
+            <button type="button" id="anim-trigger-load" class="btn-ui" style="flex: 1; justify-content: center;">
+              <span>On Load</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Replay Action -->
+        <div>
+          <button type="button" id="btn-replay-anim" class="btn-ui btn-ui-primary" style="width: 100%; justify-content: center; height: 32px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Replay Animation</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Generated CSS Live Output -->
+      <div style="padding: 1rem; border-top: 1px solid var(--border-subtle);">
+        <div class="section-title">
+          <span>Generated CSS Rules</span>
+        </div>
+        <div class="code-preview-card">
+          <button id="btn-copy-css" class="copy-code-btn">Copy CSS</button>
+          <pre id="generated-css-code">/* Belum ada perubahan styling */</pre>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Bottom Telemetry Status Bar -->
+  <footer class="studio-status-bar">
+    <div class="status-group">
+      <span id="status-active-element">Active: &lt;button.btn-primary&gt;</span>
+      <span id="status-cursor-offset">Offset: X: 482px • Y: 310px</span>
+      <span id="status-sync-indicator" style="color: #10b981; font-weight: 500;">custom-styles.css (synced)</span>
+    </div>
+
+    <div class="status-group">
+      <span id="status-latency">Latency: 0.4ms</span>
+      <span id="status-fps" class="fps-badge">60.0 FPS</span>
+      <span style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">&bull; Offline Engine</span>
+    </div>
+  </footer>
+
+  <!-- 3. Error Boundary Dialog -->
+  <div id="error-boundary-dialog" class="error-boundary-dialog">
+    <div class="error-card">
+      <div class="error-header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+        </svg>
+        <span id="error-title">Terjadi Kesalahan Sistem</span>
+      </div>
+      <p id="error-body" class="error-body">Deskripsi detail masalah akan muncul di sini.</p>
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button id="error-close-btn" class="btn-ui">Tutup</button>
+        <button id="error-retry-btn" class="btn-ui btn-ui-primary">Coba Lagi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Success Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Sandbox Floating Quick-Action Toolbar -->
+  <div id="sandbox-floating-toolbar" class="sandbox-floating-toolbar" style="display: none;">
+    <button id="btn-action-edit-text" class="floating-btn" title="Ubah Teks (Double Click)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Edit Teks</span>
+    </button>
+    <button id="btn-action-duplicate" class="floating-btn" title="Duplikasi Elemen">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+      <span>Duplikasi</span>
+    </button>
+    <button id="btn-action-move-up" class="floating-btn" title="Pindah ke Atas">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+    </button>
+    <button id="btn-action-move-down" class="floating-btn" title="Pindah ke Bawah">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <button id="btn-action-delete" class="floating-btn floating-btn-danger" title="Hapus Komponen">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+    </button>
+  </div>
+
+  <!-- Sandbox Image Replacement Modal -->
+  <div id="sandbox-image-modal" class="modal-backdrop" style="display: none;">
+    <div class="image-picker-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          <span class="modal-title">Ganti Gambar Komponen</span>
+        </div>
+        <button id="btn-close-image-modal" class="btn-icon-square" title="Tutup">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-field">
+          <label class="field-label">URL Gambar Eksternal / Lokal:</label>
+          <input id="input-custom-image-url" type="text" class="field-input" placeholder="https:// atau /sample-project/assets/...">
+        </div>
+        <div class="field-label" style="margin-top: 0.75rem;">Atau pilih dari Preset Kurasi:</div>
+        <div id="image-presets-grid" class="image-presets-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-apply-image-url" class="btn-ui btn-ui-primary">Terapkan Gambar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main ES Module Bootstrapper -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
